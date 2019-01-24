@@ -1,34 +1,23 @@
-const url = require('url');
 var https = require('https');
 
-const options = {
-    hostname: 'www.googleapis.com',
-    port: 443,
-    path: '/books/v1/volumes?q=search+terms',
-    method: 'GET'
-  }
-
+exports.sampleRequest = function(req, res) {
+  https.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY', (r) => {
+    console.log('statusCode:', r.statusCode);
+    console.log('headers:', r.headers);
   
-exports.sampleRequest = function (req, res) {
-    console.log('STATUS: ' + res.statusCode);
-    console.log('HEADERS: ' + JSON.stringify(res.headers));
+    let data = '';
 
-    req = https.request(options, function(res) {
- 
-        res.setEncoding('utf8');
-        res.on('data', function (chunk) {
-          console.log('BODY: ' + chunk);
-        });
-      });
-      
-      req.on('error', function(e) {
-        console.log('problem with request: ' + e.message);
-      });
-      
-      // write data to request body
-      req.write('data\n');
-      req.write('data\n');
-      req.end();
+    // A chunk of data has been recieved.
+    r.on('data', (chunk) => {
+      data += chunk;
+    });
+
+    // The whole response has been received. Print out the result.
+    r.on('end', () => {
+      res.send(JSON.parse(data).explanation);
+    });
+
+  }).on("error", (err) => {
+    console.log("Error: " + err.message);
+  });
 };
-
-
