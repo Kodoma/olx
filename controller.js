@@ -12,6 +12,6 @@ module.exports = http.createServer((req, res) => {
             req.method + ' Endpoint: ' +
             reqUrl.pathname);
 
-        service.sampleRequest(req, res);
+        return service.sampleRequest(req, res);
     } 
 });

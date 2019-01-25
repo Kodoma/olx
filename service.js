@@ -1,20 +1,22 @@
 var https = require('https');
 
 exports.sampleRequest = function(req, res) {
-  https.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY', (r) => {
-    console.log('statusCode:', r.statusCode);
-    console.log('headers:', r.headers);
+  return https.get('https://api.mercadolibre.com/sites/MLA/search?q=ipod', (response) => {
+    console.log('statusCode:', response.statusCode);
+    console.log('headers:', response.headers);
   
     let data = '';
 
     // A chunk of data has been recieved.
-    r.on('data', (chunk) => {
+    response.on('data', (chunk) => {
       data += chunk;
     });
 
     // The whole response has been received. Print out the result.
-    r.on('end', () => {
-      res.send(JSON.parse(data).explanation);
+    response.on('end', () => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(data));
     });
 
   }).on("error", (err) => {
